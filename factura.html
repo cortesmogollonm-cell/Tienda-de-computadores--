@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Factura</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body {
+            background: #f4f6f9;
+        }
+
+        /* CONTENEDOR */
+        .factura-box {
+            width: 600px;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* HEADER */
+        .factura-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .factura-header h1 {
+            margin: 0;
+        }
+
+        /* CLIENTE */
+        .cliente {
+            margin-bottom: 20px;
+        }
+
+        /* TABLA */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #1e3c72;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+
+        /* TOTAL */
+        .total {
+            text-align: right;
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* BOTÓN */
+        .btn {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #2a5298;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="factura-box">
+
+        <div class="factura-header">
+            <h1>🧾 Factura</h1>
+            <span id="fecha"></span>
+        </div>
+
+        <div class="cliente" id="cliente"></div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="productos"></tbody>
+        </table>
+
+        <div class="total" id="total"></div>
+
+        <button class="btn" onclick="volver()">Volver a la tienda</button>
+
+    </div>
+
+    <script>
+
+        let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+        let cliente = JSON.parse(localStorage.getItem("cliente")) || {};
+
+        let total = 0;
+
+        /* FECHA */
+        let hoy = new Date();
+        document.getElementById("fecha").innerText =
+            hoy.toLocaleDateString();
+
+        /* CLIENTE */
+        document.getElementById("cliente").innerHTML = `
+<strong>Cliente:</strong> ${cliente.nombre || ""}<br>
+<strong>Correo:</strong> ${cliente.correo || ""}<br>
+<strong>Pago:</strong> ${cliente.pago || ""}
+`;
+
+        /* PRODUCTOS */
+        carrito.forEach(p => {
+            let subtotal = p.precio * p.cantidad;
+            total += subtotal;
+
+            document.getElementById("productos").innerHTML += `
+    <tr>
+        <td>${p.nombre}</td>
+        <td>${p.cantidad}</td>
+        <td>$${p.precio}</td>
+        <td>$${subtotal}</td>
+    </tr>`;
+        });
+
+        /* TOTAL */
+        document.getElementById("total").innerText = "Total: $" + total;
+
+        /* VOLVER */
+        function volver() {
+            localStorage.removeItem("carrito");
+            localStorage.removeItem("cliente");
+            window.location = "index.html";
+        }
+
+    </script>
+
+</body>
+
+</html>
